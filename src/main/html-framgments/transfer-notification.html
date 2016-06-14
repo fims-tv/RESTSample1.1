@@ -1,0 +1,22 @@
+<!-- REST mapping for capture notifications -->
+
+<table xmlns="http://www.w3.org/1999/xhtml">
+<tr>
+<th>Description</th>
+<th>HTTP Method</th>
+<th>Body</th>
+<th>Generation Events</th>
+</tr>
+<tr>
+<td>Capture Job events related to state change, creation, deletion, progress</td>
+<td>POST</td>
+<td>cms:CaptureJobType</td>
+<td><ul> <li> Create Job <li> Job Progress <li>  Manage Job  </ul></td>
+</tr>
+<tr>
+<td>Capture Job Failures</td>
+<td>POST</td>
+<td>cms:CaptureFaultNotificationType</td>
+<td><ul> <li> Create Job <li> Job Failure </ul></td>
+</tr>
+</table>

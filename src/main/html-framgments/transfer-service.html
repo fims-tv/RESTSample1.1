@@ -1,0 +1,82 @@
+<!-- REST mapping for transfer service -->
+
+<table xmlns="http://www.w3.org/1999/xhtml">
+<tr>
+<th>Description</th>
+<th>HTTP Method</th>
+<th>URI</th>
+<th>Request Body</th>
+<th>Success Body</th>
+<th>Failure Body</th>
+<th>HTTP Request Headers</th>
+<th>HTTP Response Headers</th>
+</tr>
+<tr>
+<td>Create a Transfer Job</td>
+<td>POST</td>
+<td>.../job</td>
+<td>tms:TransferJobType</td>
+<td>tms:TransferJobType</td>
+<td>tms:TransferFaultType</td>
+<td></td>
+<td>location&nbsp;: {urlForJob}</td>
+</tr><tr>
+<td>Retrieve a Transfer Job</td>
+<td>GET</td>
+<td>.../job/{jobId}</td>
+<td></td>
+<td>tms:TransferJobType</td>
+<td>tms:TransferFaultType</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Retrieve All Transfer Jobs</td>
+<td>GET</td>
+<td>.../job/</td>
+<td></td>
+<td>bms:JobsType</td>
+<td>tms:TransferFaultType</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Retrieve a list of Specific Transfer Jobs</td>
+<td>GET</td>
+<td>.../job?jobId={jobid}&amp;jobId={jobId}...</td>
+<td></td>
+<td>bms:JobsType</td>
+<td>tms:TransferFaultType</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Retrieve a Filtered List Transfer Jobs</td>
+<td>GET</td>
+<td>.../job?{<em>JobFilterCriteria</em>} (see specification document)</td>
+<td></td>
+<td>bms:JobsType</td>
+<td>tms:FaultMsg</td>
+<td></td>
+<td></td></tr>
+<tr>
+<td>Manage Jobs (Control Jobs)</td>
+<td>POST</td>
+<td>.../job/{jobId}/manage</td>
+<td>bms:ManageJobRequestType</td>
+<td>tms:TransferJobType</td>
+<td>tms:FaultMsg</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Get Minimal Job for current Status</td>
+<td>GET</td>
+<td>.../job/{jobId}/manage</td>
+<td></td>
+<td>tms:TransferJobType (minimum attributes)</td>
+<td>tms:FaultMsg</td>
+<td></td>
+<td></td>
+</tr>
+</table>
