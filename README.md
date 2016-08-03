@@ -1,28 +1,47 @@
 # FIMS v1.1 RESTful Reference Implementation
 
 This folder contains the REST sample implementation for the FIMS v1.1 version of the specification.
-This is the first version of FIMS with support for REST and adds a JSON data binding alongside an XML
-data binding.
+This is the first version of FIMS with support for REST and adds a JSON data binding alongside an XML data binding.
 
-The implementation is written in Scala and has been tested on the Java v1.7 platform. The code is 
+The implementation is written in Scala and has been tested on the Java v1.7 platform. The code is
 licensed under an open source Apache 2.0 license.
 
-The implementation is for a server that can run mock jobs and pretend to be a repository, suitable for
-study and use in testing by developers but not intended for day-to-day professional deployment. It is not
-a full implementation of a media service and cannot capture, transfer, transform or store content.
+The implementation is for a server that can run mock jobs and pretend to be a repository, suitable for study and use in testing by developers but not intended for day-to-day professional deployment. It is not a full implementation of a media service and cannot capture, transfer, transform or store content.
 
-## Running the server
+## Bootstrapping
 
-To run the server, you need to have a Java runtime installed. This implementation has been tested on
-a v1.7 platform. All other required libraries are included with the distribution. This implementation
-should run on Windows, Mac and Linux systems.
+To run this server, you need to:
+
+1. Build the package including the server and all its dependencies using maven. An install of maven and a recent Java SDK is required.
+2. Unpack the server in its own folder.
+3. Run the server.
+
+Each step is described in the following subsections.
+
+### Building the server
+
+To build the server, first install Apache maven. Then in the root folder of this project, run:
+
+    mvn package
+
+This will download a set of dependent libraries, build the FIMS rest implementation from source in the `target` folder, build some tests, run the tests and create a self-contained deployment package.
+
+### Unpack the server distribution
+
+Create a separate folder from this one, for example `/tmp/fims-rest` and unzip the file `target/fims-rest-0.3.zip` that has been created by the build process. For example:
+
+    mkdir /tmp/fims-rest
+    cp target/fims-rest-0.3.zip /tmp/fims-rest/.
+    cd /tmp/fims-rest
+    unzip fims-rest-0.3.zip
+
+### Running the server
+
+To run the server, you need to have a Java runtime installed. This implementation has been tested on a v1.7 platform. All other required libraries are included with the distribution. This implementation should run on Windows, Mac and Linux systems.
 
 Download and install a Java runtime from http://www.java.com
 
-To run the server, open a terminal and unzip the distribution into new folder/directory. Open a terminal
-or command shell and cd to that directory. You can choose to run the implementation in two different 
-containers: an Apache CXF container (http://cxf.apache.org/); the Oracle Jersey (https://jersey.java.net/)
-RESTful reference implementation. On Linux or Mac, type one of ...
+To run the server, open a terminal and unzip the distribution into new folder/directory. Open a terminal or command shell and cd to that directory. You can choose to run the implementation in two different containers: an Apache CXF container (http://cxf.apache.org/); the Oracle Jersey (https://jersey.java.net/) RESTful reference implementation. On Linux or Mac, type one of ...
 
 1. ./fims-rest-cxf.sh
 2. ./fims-rest-jersy.sh
@@ -32,11 +51,11 @@ On Windows, type one of ...
 1. fims-rest-cxf.bat
 2. fims-rest-jersey.bat
 
-You need to interact with the server using a web client, such as a web browser, your favourite HTTP programming 
-library or a command line tool like curl (http://curl.haxx.se/). The server runs on port 9000. To check whether 
-the server is working OK, browser to "http://localhost:9000/api/job". You should see an XML response like ...
+You need to interact with the server using a web client, such as a web browser, your favourite HTTP programming library or a command line tool like curl (http://curl.haxx.se/). The server runs on port 9000. To check whether the server is working OK, browser to "http://localhost:9000/api/job". You should see an XML response like ...
 
+```xml
 <bms:jobs detail="full" totalSize="0"/>
+```
 
 To stop the server, type Ctrl-C.
 
@@ -45,13 +64,13 @@ To stop the server, type Ctrl-C.
 ### XML fragments to try
 
 For more detailed exploration of what the server can do, consider installing a REST testing utility in your
-browser, such as Chrome Poster (https://github.com/dengzhp/chrome-poster). Such a tool can be used to try the 
+browser, such as Chrome Poster (https://github.com/dengzhp/chrome-poster). Such a tool can be used to try the
 following steps:
 
 1. Create a content placeholder by posting the following to "http://localhost:9000/api/content":
 
 ```xml
-<bms:bmContent xmlns:bms="http://base.fims.tv" 
+<bms:bmContent xmlns:bms="http://base.fims.tv"
     xmlns:desc="http://description.fims.tv"   
     xmlns:xml="http://www.w3.org/XML/1998/namespace"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -80,13 +99,13 @@ http://localhost:9000/api/content/11b5293f-1be1-445a-997a-caa6f2b2bee4
 
 3. Edit the following XML fragment to set a job start time (bms:startJob) in the near future. Note
 that "Z" time is UTC Zulu time, also known as GMT, so you may need to adjust for your
-timezone and daylight savings time. Create a mock capture job by posting the following 
+timezone and daylight savings time. Create a mock capture job by posting the following
 XML fragment to "http://localhost:9000/api/job".
 
 ```xml
-<bms:job xsi:type="cms:CaptureJobType" xmlns:cms="http://capturemedia.fims.tv" 
-    xmlns:bms="http://base.fims.tv" xmlns:desc="http://description.fims.tv" 
-    xmlns:xml="http://www.w3.org/XML/1998/namespace" 
+<bms:job xsi:type="cms:CaptureJobType" xmlns:cms="http://capturemedia.fims.tv"
+    xmlns:bms="http://base.fims.tv" xmlns:desc="http://description.fims.tv"
+    xmlns:xml="http://www.w3.org/XML/1998/namespace"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bms:resourceID>urn:uuid:c8bd1a79-53ed-4c0a-8bcd-fc3a806c4600</bms:resourceID>
   <bms:bmObjects>
@@ -131,49 +150,25 @@ http://localhost:9000/api/job/c8bd1a79-53ed-4c0a-8bcd-fc3a806c4600?detail=summar
 
 ### Examine the tests
 
-The test files provided with this distribution are intended to be both runnable and informative. These can be
-below the "src/test/scala/tv/amwa/ebu/fims/rest/" folder. In particular, see the XMLExampleSpec provided in the 
-following file:
+The test files provided with this distribution are intended to be both runnable and informative. These can be below the `src/test/scala/tv/amwa/ebu/fims/rest/` folder. In particular, see the XMLExampleSpec provided in the following file:
 
 ```
 src/test/scala/tv/amwa/ebu/fims/rest/rest/XMLExamplesSpec.scala
 ```
 
-As a side effect, this test prints fragments of XML that represent messages as sent to or from the server along
-with a short explanation. 
+As a side effect, this test prints fragments of XML that represent messages as sent to or from the server along with a short explanation.
 
-In a system with the a full Java Development Kit and maven (http://maven.apache.org/) installed, type "mvn test"
-to run the tests.
-
-## Compiling the source code and development
-
-The source code for the server is provided. You can build the code from source using the maven build tool that 
-uses the file "pom.xml". This distribution was made by running "mvn package". For more information on using maven, 
-see http://maven.apache.org/.
-
-To extend the code provided with your own service implementation, consider extending the ServiceEngine trait. A
-Scala trait is similar to a Java interface. See file ...
-
-```
-src/main/scala/tv/amwa/ebu/fims/rest/engine/ServiceEngine.scala
-```
+In a system with the a full Java Development Kit and maven (http://maven.apache.org/) installed, type `mvn test` to run the tests.
 
 ## TODO
 
-The following operations have not yet been implemented. It is planned to add these items to this implementation at 
+The following operations have not yet been implemented. It is planned to add these items to this implementation at
 some point in the future:
 
-* The implementation has limited support for fault mapping codes and does not have coverage of all possible system
-and application-level error conditions.
-* The following repository operations are not supported: GenerateUniqueID, AddEssencePlaceholder, AddEssence, 
-CancelAddEssence, ReplaceContent, UpdateContentProperties, Lock, UnLock, ClearLock, GetLocks, RemoveEssence,
-UnRemoveEssence, RemoveContent, UnRemoveContent, PurgeEssence, CancelPurgeEssence, PurgeContent, CancelPurgeContent,
+* The implementation has limited support for fault mapping codes and does not have coverage of all possible system and application-level error conditions.
+* The following repository operations are not supported: GenerateUniqueID, AddEssencePlaceholder, AddEssence, CancelAddEssence, ReplaceContent, UpdateContentProperties, Lock, UnLock, ClearLock, GetLocks, RemoveEssence, UnRemoveEssence, RemoveContent, UnRemoveContent, PurgeEssence, CancelPurgeEssence, PurgeContent, CancelPurgeContent,
 RetrieveEssence, CancelRetrieveEssence, ContentQuery.
 * The RCR (Repository Capabilities Registry) is not supported in this implementation.
 * No queue operations are supported, but the serialization of queue-related resources to and from XML and JSON is.
-* Similarly, no transfer or tranform operations are supported, but code for the serialization of transfer and transform 
-resources to and from XML and JSON is.
+* Similarly, no transfer or tranform operations are supported, but code for the serialization of transfer and transform resources to and from XML and JSON is.
 * The following capture operations are not fully supported: QueryJob
-
-
-
